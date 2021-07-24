@@ -34,12 +34,12 @@ class PriorityQueue:
     @staticmethod
     def get_children(x: int):
         """Return the left and right child's index"""
-        return int((2 * x) + 1), int((2 * x) + 2)
+        return (2 * x) + 1, (2 * x) + 2
 
     @staticmethod
     def get_parent(x: int) -> int:
         """Return the index of the parent of a node"""
-        return int((x - 1) / 2)
+        return (x - 1) // 2
 
     def copy_list(self):
         """Return a copy of the heap"""
