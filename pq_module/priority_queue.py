@@ -1,6 +1,3 @@
-import math
-from math import log2
-
 
 class Node:
     """A single node containing the priority and the actual data"""
@@ -13,6 +10,11 @@ class Node:
         if not isinstance(other, Node):
             return False
         return self.priority == other.priority and self.data == other.data
+
+    def __lt__(self, other):
+        if not isinstance(other, Node):
+            return False
+        return self.priority < other.priority
 
     def __hash__(self):
         return hash((self.priority, self.data))
@@ -29,7 +31,7 @@ class PriorityQueue:
     """Priority queue where the min value is at the top"""
 
     def __init__(self) -> None:
-        self.__heap = []
+        self.__heap: list[Node] = []
 
     @staticmethod
     def get_children(x: int):
@@ -89,28 +91,10 @@ class PriorityQueue:
 
     def min(self):
         """Return the head of the heap (the node with the minimum priority) without removing it from the list"""
-        if self.is_empty():
-            return None
-        else:
-            return self.__heap[0]
+        return min(self.__heap, default=None)
 
     def max(self):
-        """Return the Node with the max priority without removing it from the list"""
-        if self.is_empty():
-            return None
-
-        height = int(log2(len(self.__heap)))
-        start_index = (2 ** height) - 1  # 2^height - 1
-
-        max_priority = -math.inf
-        node = None
-
-        for i in range(start_index, len(self.__heap)):
-            if max_priority < self.__heap[i].priority:
-                max_priority = self.__heap[i].priority
-                node = self.__heap[i]
-
-        return node
+        return max(self.__heap, default=None)
 
     def append(self, elem: Node):
         """Add a new node at the end of the heap"""
@@ -119,10 +103,6 @@ class PriorityQueue:
         index = len(self.__heap) - 1
         # If necessary, push the new value to the top
         self.__restore_heap(index)
-
-    def clear(self):
-        """Remove all elements from the list"""
-        self.__heap.clear()
 
     def __restore_heap(self, index: int):
         """Restore the heap property"""
@@ -134,8 +114,13 @@ class PriorityQueue:
 
             index = self.get_parent(index)
 
+    def clear(self):
+        """Remove all elements from the list"""
+        self.__heap.clear()
+
     def search(self, node: Node):
         """Return the index of the searched node or None if i doesn't exists"""
+
         for i in range(0, len(self.__heap)):
             if self.__heap[i] == node:
                 return i
